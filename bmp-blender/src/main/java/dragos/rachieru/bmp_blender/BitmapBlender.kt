@@ -28,7 +28,7 @@ class BitmapBlender(val context: Context,
                 .build()
     }
 
-    fun scanFaces(): Maybe<Bitmap> {
+    fun blend(): Maybe<Bitmap> {
         return Maybe.create { emitter ->
             var frame = Frame.Builder().setBitmap(leftBitmap).build()
             var faces = detector.detect(frame)
@@ -36,29 +36,29 @@ class BitmapBlender(val context: Context,
                 emitter.onComplete()
                 return@create
             }
-            val leftMesh = createMesh(faces)
+            val leftMesh = createMesh(faces.valueAt(0))
             frame = Frame.Builder().setBitmap(leftBitmap).build()
             faces = detector.detect(frame)
             if(faces.size() ==0) {
                 emitter.onComplete()
                 return@create
             }
-            val rightMesh = createMesh(faces)
-            val bitmap = blend(leftMesh, rightMesh)
+            val rightMesh = createMesh(faces.valueAt(0))
+            val bitmap = morph(leftMesh, rightMesh)
             emitter.onSuccess(bitmap)
         }
     }
 
-    fun createMesh(faces: SparseArray<Face>): Vector<Point> {
+    private fun createMesh(face: Face): Vector<Point> {
         val mesh = Vector<Point>()
-        for (i in 0..faces.size()) {
-            val point = faces.valueAt(i).position
+        for (lm in face.landmarks) {
+            val point = lm.position
             mesh.add(Point(point.x.toInt(), point.y.toInt()))
         }
         return mesh
     }
 
-    fun blend(leftMesh: Vector<Point>, rightMesh: Vector<Point>): Bitmap {
+    private fun morph(leftMesh: Vector<Point>, rightMesh: Vector<Point>): Bitmap {
         var time = System.currentTimeMillis()
         val result = CTriangulation(leftBitmap, rightBitmap, leftMesh, rightMesh).start(listener, numOfSteps);
 
