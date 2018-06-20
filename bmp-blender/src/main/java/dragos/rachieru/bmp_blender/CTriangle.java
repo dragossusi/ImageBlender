@@ -24,7 +24,7 @@ import java.util.Vector;
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA * 
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA *
  *
  * @version 1.5
  * <br/>
@@ -37,7 +37,7 @@ import java.util.Vector;
  * License: GPLv2.
  * <br/>
  * Description: Data structure for triangulation of the mesh.
- * <br/> 
+ * <br/>
  * Hint: Relating to picture pixel units.
  */
 public class CTriangle implements Comparator<Point> {
@@ -104,8 +104,8 @@ public class CTriangle implements Comparator<Point> {
      */
     public Point[] getWithins(){
         return this.withins;
-    }    
-    /** 
+    }
+    /**
      * Get function.
      * @return All three corner points.
      */
@@ -114,7 +114,7 @@ public class CTriangle implements Comparator<Point> {
     }
     /**
      * Draw the triangle to an image.
-     * 
+     *
      * @param image Image to draw the lines to.
      */
     public void debug(Bitmap image){
@@ -127,7 +127,7 @@ public class CTriangle implements Comparator<Point> {
      * See hash contract.
      */
     public int hashCode(){
-        return (c[0].hashCode() + c[1].hashCode() + c[2].hashCode()) % 
+        return (c[0].hashCode() + c[1].hashCode() + c[2].hashCode()) %
             Integer.MAX_VALUE;
     }
     /**
@@ -136,8 +136,8 @@ public class CTriangle implements Comparator<Point> {
      */
     public boolean equals(Object obj){
         CTriangle other = (CTriangle)obj;
-        return c[0].equals(other.c[0]) && 
-            c[1].equals(other.c[1]) && 
+        return c[0].equals(other.c[0]) &&
+            c[1].equals(other.c[1]) &&
             c[2].equals(other.c[2]);
     }
     /**
@@ -159,7 +159,7 @@ public class CTriangle implements Comparator<Point> {
      */
     private void drawLine(Bitmap image, Point p1, Point p2){
         if(p1.equals(p2))return;
-        int 
+        int
             x1 = p1.x,
             x2 = p2.x,
             y1 = p1.y,
@@ -176,13 +176,13 @@ public class CTriangle implements Comparator<Point> {
         }
     }
     /**
-     * Calculate left & right edge point of the scan line. The scan line must 
+     * Calculate left & right edge point of the scan line. The scan line must
      * cross two of the three edges. Seldom the scan line crosses one edge
      * + two end points of the other both edges.
      * @param y Vertical position of the scan line.
      */
     private void calculateXBounds(int y){
-        int 
+        int
             x1 = getXIntersection(y, p[0], p[1]),
             x2 = getXIntersection(y, p[0], p[2]),
             x3 = getXIntersection(y, p[1], p[2]);
@@ -208,7 +208,7 @@ public class CTriangle implements Comparator<Point> {
         }
     }
     /**
-     * Test 
+     * Test
      * @param y Vertical position of the scan line.
      * @param p1 First point of the edge line.
      * @param p2 Second point of the edge line.

@@ -3,6 +3,7 @@ package dragos.rachieru.bmp_blender
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.face.FaceDetector
@@ -26,26 +27,32 @@ class BitmapBlender(val context: Context,
                 .setTrackingEnabled(false)
                 .setLandmarkType(FaceDetector.ALL_LANDMARKS)
                 .build()
+        if (!detector.isOperational()) {
+            AlertDialog.Builder(context).setMessage("Could not set up the face detector!").show()
+        }
     }
 
     fun blend(): Maybe<Bitmap> {
         return Maybe.create { emitter ->
-            var frame = Frame.Builder().setBitmap(leftBitmap).build()
-            var faces = detector.detect(frame)
-            if(faces.size() ==0) {
-                emitter.onComplete()
-                return@create
-            }
-            val leftMesh = createMesh(faces.valueAt(0))
-            frame = Frame.Builder().setBitmap(leftBitmap).build()
-            faces = detector.detect(frame)
-            if(faces.size() ==0) {
-                emitter.onComplete()
-                return@create
-            }
-            val rightMesh = createMesh(faces.valueAt(0))
-            val bitmap = morph(leftMesh, rightMesh)
-            emitter.onSuccess(bitmap)
+            if(detector.isOperational) {
+                var frame = Frame.Builder().setBitmap(leftBitmap).build()
+                var faces = detector.detect(frame)
+                if (faces.size() == 0) {
+                    emitter.onComplete()
+                    return@create
+                }
+                val leftMesh = createMesh(faces.valueAt(0))
+                frame = Frame.Builder().setBitmap(leftBitmap).build()
+                faces = detector.detect(frame)
+                if (faces.size() == 0) {
+                    emitter.onComplete()
+                    return@create
+                }
+                val rightMesh = createMesh(faces.valueAt(0))
+                val bitmap = morph(leftMesh, rightMesh)
+                emitter.onSuccess(bitmap)
+            } else
+                emitter.onError(Throwable("nu merge detectorul!"))
         }
     }
 

@@ -17,11 +17,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val blender = BitmapBlender(
-                this,
-                BitmapFactory.decodeResource(resources, R.drawable.left),
-                BitmapFactory.decodeResource(resources, R.drawable.right)
-        )
+        val left = BitmapFactory.decodeResource(resources, R.drawable.left2)
+        val right = BitmapFactory.decodeResource(resources, R.drawable.right)
+        image_left.setImageBitmap(left)
+        image_right.setImageBitmap(right)
+        BitmapFactory.decodeResource(resources, R.drawable.right)
+        val blender = BitmapBlender(this, left, right)
         blender.blend()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onComplete() {
-                        Toast.makeText(this@MainActivity,"No face detected:(",Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@MainActivity, "No face detected:(", Toast.LENGTH_LONG).show()
                     }
 
                     override fun onSubscribe(d: Disposable) {
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onError(e: Throwable) {
-                        Toast.makeText(this@MainActivity,e.message,Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
                     }
 
                 })
