@@ -1,1 +1,1 @@
-include ':app', ':bmp-blender'
+include ':app', ':bmp-blender', 'dlib'

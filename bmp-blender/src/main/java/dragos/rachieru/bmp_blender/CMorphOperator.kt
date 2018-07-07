@@ -2,8 +2,6 @@ package dragos.rachieru.bmp_blender
 
 import android.graphics.Bitmap
 import android.graphics.Point
-import dragos.rachieru.bmp_blender.old.CStrings
-import java.io.File
 import java.util.*
 
 /**
@@ -156,7 +154,7 @@ class CMorphOperator(private val listener: OnProgressListener?,
                 triangle()
                 ++t_idx
             }
-            val f = File(CStrings.getOutput(i))
+//            val f = File(CStrings.getOutput(i))
             /* Save image into workdir. */
             //            ImageIO.write(resultImage, "jpg", f); fixme
             /* Show progress. */
