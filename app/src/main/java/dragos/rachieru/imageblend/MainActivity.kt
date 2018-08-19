@@ -2,11 +2,10 @@ package dragos.rachieru.imageblend
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import dragos.rachieru.bmp_blender.BitmapBlender
-import dragos.rachieru.bmp_blender.BitmapBlenderGoogle
 import io.reactivex.Completable
 import io.reactivex.CompletableObserver
 import io.reactivex.MaybeObserver
@@ -15,8 +14,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-
-//import dragos.rachieru.imageblend.R
 
 class MainActivity : AppCompatActivity(), CompletableObserver {
 

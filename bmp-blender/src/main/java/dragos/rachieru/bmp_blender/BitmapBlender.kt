@@ -43,19 +43,28 @@ class BitmapBlender(val context: Context,
     private fun createMesh(face: VisionDetRet): Vector<Point> {
         val mesh = Vector<Point>()
         face.faceLandmarks.forEach { mesh.add(it) }
+        for (i in 0..mesh.size - 2) {
+            for (j in i + 1..mesh.size - 2) {
+                if (mesh[i].y < mesh[j].y || (mesh[i].y == mesh[j].y && mesh[i].x < mesh[j].x)) {
+                    val aux = mesh[i]
+                    mesh[i] = mesh[j]
+                    mesh[j] = aux
+                }
+            }
+        }
         return mesh
     }
 
     private fun morph(leftMesh: Vector<Point>, rightMesh: Vector<Point>): Bitmap {
         var time = System.currentTimeMillis()
-        val result = CTriangulation(leftBitmap, rightBitmap, leftMesh, rightMesh).start(listener, numOfSteps);
+        val result = CTriangulation(leftBitmap, rightBitmap, leftMesh, rightMesh).start(listener, numOfSteps)
 
         /* Calculate duration. */
         time = System.currentTimeMillis() - time
         time /= 1000
         /* Print duration to the console. */
-        Log.d("BitmapBlenderGoogle", "Duration = $time seconds.")
-        return result;
+        Log.d("BitmapBlender", "Duration = $time seconds.")
+        return result
     }
 
     override fun close() {
