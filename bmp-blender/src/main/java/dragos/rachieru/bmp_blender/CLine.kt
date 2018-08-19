@@ -132,12 +132,16 @@ class CLine {
     /**
      * Both end points are identical.
      */
-    override fun equals(o: Any?): Boolean {
-        val other = o as CLine?
-        return x1 == other!!.x1 &&
-                x2 == other.x2 &&
-                y1 == other.y1 &&
-                y2 == other.y2
+    override fun equals(other: Any?): Boolean {
+        if (other !is CLine)
+            return super.equals(other)
+        else {
+            val cLine = other as CLine?
+            return x1 == cLine!!.x1 &&
+                    x2 == cLine.x2 &&
+                    y1 == cLine.y1 &&
+                    y2 == cLine.y2
+        }
     }
 
     /**

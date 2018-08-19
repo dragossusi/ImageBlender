@@ -13,7 +13,7 @@ object Constants {
         val inp = context.getResources().openRawResource(id)
         val out = FileOutputStream(path)
         val buff = ByteArray(1024)
-        var read = 0
+        var read: Int
         try {
             read = inp.read(buff)
             while (read > 0) {
@@ -28,7 +28,6 @@ object Constants {
 
     val faceShapeModelPath: String
         get() {
-            val sdcard = Environment.getExternalStorageDirectory()
             return appDir + File.separator + "shape_predictor_68_face_landmarks.dat"
         }
 
