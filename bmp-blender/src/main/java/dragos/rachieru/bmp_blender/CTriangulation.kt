@@ -9,6 +9,7 @@ import java.util.Queue
 import java.util.Vector
 
 import dragos.rachieru.bmp_blender.utils.*
+import java.lang.Exception
 
 /**
  * File belongs to javamorph (Merging of human-face-pictures).
@@ -145,7 +146,12 @@ class CTriangulation(private val leftBitmap: Bitmap,
             order.add(p)
         }
         work()
-        debug()
+        try {
+            debug()
+        } catch (e: Exception) {
+            println("Can't debug triangles.")
+            e.printStackTrace()
+        }
         println("End. Duration of triangulation = " + (System.currentTimeMillis() - time) + '.'.toString())
     }
 
@@ -324,39 +330,37 @@ class CTriangulation(private val leftBitmap: Bitmap,
     /**
      * Write left right and 50% triangulation into the debug directory.
      */
-    private fun debug() {
-        var image: Bitmap
-        try {
-            image = Bitmap.createBitmap(leftBitmap.width,
-                    leftBitmap.height,
-                    Bitmap.Config.RGB_565)
-            for (t in leftTriangles) {
-                t.debug(image)
-            }
-            //            ImageIO.write(image, "png", new File(CStrings.LEFT_TRI)); fixme
-            image = Bitmap.createBitmap(
-                    rightBitmap.width,
-                    rightBitmap.height,
-                    Bitmap.Config.RGB_565
-            )
-            for (t in rightTriangles) {
-                t.debug(image)
-            }
-            //            ImageIO.write(image, "png", new File(CStrings.RIGHT_TRI)); fixme
-
-            image = Bitmap.createBitmap(
-                    width,
-                    height,
-                    Bitmap.Config.RGB_565
-            )
-            for (t in triangles) {
-                t.debug(image)
-            }
-            //            ImageIO.write(image, "png", new File(CStrings.MIDDLE_TRI)); fixme
-        } catch (e: Exception) {
-            println("Can't debug triangles.")
-            e.printStackTrace()
+    @Throws(Exception::class)
+    fun debug(): Bitmap {
+        val image1: Bitmap
+        val image2: Bitmap
+        val image3: Bitmap
+        image1 = Bitmap.createBitmap(leftBitmap.width,
+                leftBitmap.height,
+                Bitmap.Config.RGB_565)
+        for (t in leftTriangles) {
+            t.debug(image1)
         }
+        //            ImageIO.write(image, "png", new File(CStrings.LEFT_TRI)); fixme
+        image2 = Bitmap.createBitmap(
+                rightBitmap.width,
+                rightBitmap.height,
+                Bitmap.Config.RGB_565
+        )
+        for (t in rightTriangles) {
+            t.debug(image2)
+        }
+        //            ImageIO.write(image, "png", new File(CStrings.RIGHT_TRI)); fixme
 
+        image3 = Bitmap.createBitmap(
+                width,
+                height,
+                Bitmap.Config.RGB_565
+        )
+        for (t in triangles) {
+            t.debug(image3)
+        }
+        return image3
+        //            ImageIO.write(image, "png", new File(CStrings.MIDDLE_TRI)); fixme
     }
 }

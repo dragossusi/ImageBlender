@@ -4,12 +4,13 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.util.Log
-import io.reactivex.Maybe
-import java.io.Closeable
 import com.tzutalin.dlib.FaceDet
 import com.tzutalin.dlib.VisionDetRet
 import io.reactivex.Completable
-import java.util.Vector
+import io.reactivex.Maybe
+import io.reactivex.Single
+import java.io.Closeable
+import java.util.*
 
 
 class BitmapBlender(val context: Context,
@@ -24,25 +25,40 @@ class BitmapBlender(val context: Context,
         detector = FaceDet(datPath)
     }
 
-    fun blend(): Maybe<Bitmap> {
+    fun blend(leftMesh: Vector<Point>, rightMesh: Vector<Point>): Maybe<Bitmap> {
         return Maybe.fromCallable {
-            var faces = detector.detect(leftBitmap)
-            if (faces == null || faces.isEmpty())
-                return@fromCallable null
-            val leftMesh = createMesh(faces[0])
-            faces = detector.detect(rightBitmap)
-            if (faces == null || faces.isEmpty()) {
-                return@fromCallable null
-            }
-            val rightMesh = createMesh(faces[0])
             val bitmap = morph(leftMesh, rightMesh)
             return@fromCallable bitmap
         }
     }
 
+    fun debug(leftMesh: Vector<Point>, rightMesh: Vector<Point>): Single<Bitmap> {
+        return Single.fromCallable {
+            return@fromCallable triangulate(leftMesh, rightMesh)
+        }
+    }
+
+    fun scanLeft(): Single<Vector<Point>> = Single.fromCallable {
+        val faces = detector.detect(leftBitmap)
+        if (faces.isNullOrEmpty())
+            throw Exception("Can't find face in left image")
+        createMesh(faces[0])
+    }
+
+    fun scanRight(): Single<Vector<Point>> = Single.fromCallable {
+        val faces = detector.detect(rightBitmap)
+        if (faces.isNullOrEmpty())
+            throw Exception("Can't find face in right image")
+        createMesh(faces[0])
+    }
+
     private fun createMesh(face: VisionDetRet): Vector<Point> {
         val mesh = Vector<Point>()
         face.faceLandmarks.forEach { mesh.add(it) }
+        mesh.add(Point(0, 0))
+        mesh.add(Point(0, 500))
+        mesh.add(Point(500, 0))
+        mesh.add(Point(500, 500))
         for (i in 0..mesh.size - 2) {
             for (j in i + 1..mesh.size - 2) {
                 if (mesh[i].y < mesh[j].y || (mesh[i].y == mesh[j].y && mesh[i].x < mesh[j].x)) {
@@ -53,6 +69,10 @@ class BitmapBlender(val context: Context,
             }
         }
         return mesh
+    }
+
+    private fun triangulate(leftMesh: Vector<Point>, rightMesh: Vector<Point>): Bitmap {
+        return CTriangulation(leftBitmap, rightBitmap, leftMesh, rightMesh).debug()
     }
 
     private fun morph(leftMesh: Vector<Point>, rightMesh: Vector<Point>): Bitmap {

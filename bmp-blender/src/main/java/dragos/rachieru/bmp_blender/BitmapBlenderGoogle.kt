@@ -3,7 +3,7 @@ package dragos.rachieru.bmp_blender
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Point
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import com.google.android.gms.vision.Frame
 import com.google.android.gms.vision.face.FaceDetector

@@ -10,7 +10,7 @@ import java.io.IOException
 object Constants {
     @Throws(IOException::class)
     fun copyRawToSdcard(context: Context, id: Int, path: String) {
-        val inp = context.getResources().openRawResource(id)
+        val inp = context.resources.openRawResource(id)
         val out = FileOutputStream(path)
         val buff = ByteArray(1024)
         var read: Int
@@ -26,9 +26,12 @@ object Constants {
         }
     }
 
+    val datFileName: String = "shape_predictor_68_face_landmarks.dat"
+
+    @Deprecated("dont use", level = DeprecationLevel.ERROR, replaceWith = ReplaceWith("datFileName", "dragos.rachieru.imageblend.Constants.datFileName"))
     val faceShapeModelPath: String
         get() {
-            return appDir + File.separator + "shape_predictor_68_face_landmarks.dat"
+            return appDir + File.separator + datFileName
         }
 
     val appDir: String
